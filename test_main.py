@@ -93,6 +93,55 @@ class TaskDatabaseTests(unittest.TestCase):
             app_main.uploadingTasks(),
             [(2, "Задача 2", "1 2 3", 1, 1, 1)],
         )
+    def test_remove_deletes_multidigit_id(self):
+        app_main.addToBase(2, "Задача 2", [1, 2, 3], 1, 1, 1)
+        app_main.addToBase(12, "Задача 12", [4, 5, 6], 2, 2, 2)
+
+        app_main.remove("task12")
+
+        self.assertEqual(
+            app_main.uploadingTasks(),
+            [(2, "Задача 2", "1 2 3", 1, 1, 1)],
+        )
+
+    def test_remove_id_10_does_not_delete_id_0(self):
+        app_main.addToBase(0, "Задача 0", [1, 1, 1], 1, 1, 1)
+        app_main.addToBase(10, "Задача 10", [2, 2, 2], 2, 2, 2)
+
+        app_main.remove("task10")
+
+        self.assertEqual(
+            app_main.uploadingTasks(),
+            [(0, "Задача 0", "1 1 1", 1, 1, 1)],
+        )
+
+    def test_remove_id_21_does_not_delete_id_1(self):
+        app_main.addToBase(1, "Задача 1", [1, 2, 3], 1, 1, 1)
+        app_main.addToBase(21, "Задача 21", [4, 5, 6], 2, 2, 2)
+
+        app_main.remove("task21")
+
+    def test_add_to_base_rejects_color_with_two_components(self):
+        with self.assertRaises(ValueError):
+            app_main.addToBase(3, "Задача", [10, 20], 1, 1, 1)
+
+    def test_add_to_base_rejects_empty_color(self):
+        with self.assertRaises(ValueError):
+            app_main.addToBase(4, "Задача", [], 1, 1, 1)
+
+    def test_remove_handles_empty_identifier(self):
+        app_main.addToBase(1, "Задача", [1, 2, 3], 1, 1, 1)
+
+        with self.assertRaises(ValueError):
+            app_main.remove("")
+
+        self.assertEqual(len(app_main.uploadingTasks()), 1)
+
+    def test_remove_handles_non_numeric_identifier(self):
+        app_main.addToBase(1, "Задача", [1, 2, 3], 1, 1, 1)
+
+        with self.assertRaises(ValueError):
+            app_main.remove("taskA")
 
 
 if __name__ == "__main__":

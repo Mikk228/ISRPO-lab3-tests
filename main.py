@@ -47,19 +47,19 @@ def addToBase(i,name, color, col, row, len):
                           VALUES
                           (?,?,?,?,?,?);'''
         
-        print(i, name, color, col, row, len)
+        # print(i, name, color, col, row, len)
         
         cursor.execute(conn, (i, str(name), rgb, int(col), int(row), int(len)))
         con.commit()
 
 
-        print(read_data())
+        # print(read_data())
         con.commit()
 
 @eel.expose
 def remove(i):
      i = i[-1]
-     print(i)
+    #  print(i)
      cursor.execute(f'''DELETE FROM task
                     WHERE i = {i} ''')
      con.commit()
